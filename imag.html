@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eCommerce Dashboard</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.dashboard {
+    width: 90%;
+    margin: auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+}
+
+header h1 {
+    margin: 0;
+}
+
+select {
+    padding: 5px;
+}
+
+main {
+    margin-top: 20px;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+.overview{
+    display: flex;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.card {
+    background-color: #fff;
+    padding: 15px;
+    width: 31%;
+    height: 43px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-right: 20px;
+    display: inline-block;
+}
+
+.chart-container, .customer-insights {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <h1>eCommerce Dashboard</h1>
+            <select id="timeFilter">
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+        </header>
+        <main>
+            <section class="overview">
+                <div class="card" id="totalSales">Total Sales:₹0
+                </div>
+                <div class="card" id="totalOrders">Total Orders: 0</div>
+                <div class="card" id="avgOrderValue">Average Order Value: ₹0</div>
+            </section>
+            <section class="chart-container">
+                <canvas id="salesChart"></canvas>
+            </section>
+            <section class="top-products">
+                <h2>Top Products</h2>
+                <ul id="topProductsList"></ul>
+            </section>
+            <section class="recent-orders">
+                <h2>Recent Orders</h2>
+                <ul id="recentOrdersList"></ul>
+            </section>
+            <section class="customer-insights">
+                <h2>Customer Insights</h2>
+                <div id="customerInsightsChart">
+                    
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Initialize Chart.js
+const ctxSales = document.getElementById('salesChart').getContext('2d');
+const salesChart = new Chart(ctxSales, {
+    type: 'line',
+    data: {
+        labels: [], // Dynamic labels
+        datasets: [{
+            label: 'Sales',
+            data: [], // Dynamic data
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Date'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Amount'
+                }
+            }
+        }
+    }
+});
+
+const ctxCustomer = document.getElementById('customerChart').getContext('2d');
+const customerChart = new Chart(ctxCustomer, {
+    type: 'bar',
+    data: {
+        labels: [], // Dynamic labels
+        datasets: [{
+            label: 'Customer Activity',
+            data: [], // Dynamic data
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Date'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Activity'
+                }
+            }
+        }
+    }
+});
+
+document.getElementById('timeFilter').addEventListener('change', function() {
+    const filter = this.value;
+    updateDashboardData(filter);
+});
+
+function updateDashboardData(filter) {
+    // Fetch and update data based on filter
+    // Placeholder data for example purposes
+    let salesLabels = [];
+    let salesData = [];
+    let customerLabels = [];
+    let customerData = [];
+    let topProducts = [];
+    let recentOrders = [];
+    
+    switch (filter) {
+        case 'weekly':
+            salesLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            salesData = [100, 150, 200, 250, 300, 350, 400];
+            customerLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+            customerData = [30, 40, 50, 60];
+            topProducts = ['Product A', 'Product B', 'Product C'];
+            recentOrders = ['Order 1', 'Order 2', 'Order 3'];
+            break;
+        case 'monthly':
+            salesLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+            salesData = [400, 500, 600, 700];
+            customerLabels = ['Month 1', 'Month 2', 'Month 3'];
+            customerData = [100, 120, 140];
+            topProducts = ['Product D', 'Product E', 'Product F'];
+            recentOrders = ['Order 4', 'Order 5', 'Order 6'];
+            break;
+        case 'yearly':
+            salesLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            salesData = [1000, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200];
+            customerLabels = ['Year 1', 'Year 2', 'Year 3'];
+            customerData = [300, 400, 500];
+            topProducts = ['Product G', 'Product H', 'Product I'];
+            recentOrders = ['Order 7', 'Order 8', 'Order 9'];
+            break;
+    }
+    
+    // Update sales chart
+    salesChart.data.labels = salesLabels;
+    salesChart.data.datasets[0].data = salesData;
+    salesChart.update();
+    
+    // Update customer chart
+    customerChart.data.labels = customerLabels;
+    customerChart.data.datasets[0].data = customerData;
+    customerChart.update();
+    
+    // Update data summary
+    document.getElementById('totalSales').innerText = `Total Sales: $${salesData.reduce((a, b) => a + b, 0)}`;
+    document.getElementById('totalOrders').innerText = `Total Orders: ${salesData.length}`;
+    document.getElementById('avgOrderValue').innerText = `Average Order Value: $${(salesData.reduce((a, b) => a + b, 0) / salesData.length).toFixed(2)}`;
+    
+    // Update top products list
+    const topProductsList = document.getElementById('topProductsList');
+    topProductsList.innerHTML = topProducts.map(product => `<li>${product}</li>`).join('');
+    
+    // Update recent orders list
+    const recentOrdersList = document.getElementById('recentOrdersList');
+    recentOrdersList.innerHTML = recentOrders.map(order => `<li>${order}</li>`).join('');
+}
+
+    </script>
+</body>
+</html>
